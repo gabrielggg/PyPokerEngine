@@ -1,3 +1,6 @@
+Make PyPokerEngie use deuces's card, deck and evaluator and increase performance
+
+
 # PyPokerEngine
 
 [![Build Status](https://travis-ci.org/ishikota/PyPokerEngine.svg?branch=master)](https://travis-ci.org/ishikota/PyPokerEngine)
