@@ -16,6 +16,7 @@ class DataEncoder:
         "name": player.name,
         "uuid": player.uuid,
         "stack": player.stack,
+        "cashgame_stack": player.cashgame_stack,
         "state": self.__payinfo_to_str(player.pay_info.status)
         }
     if holecard:
