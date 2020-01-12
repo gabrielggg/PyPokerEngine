@@ -6,9 +6,9 @@ def setup_config(max_round, initial_stack, small_blind_amount, ante=0):
     return Config(max_round, initial_stack, small_blind_amount, ante)
 
 
-def start_poker(config, verbose=2, cashgame: bool = False):
+def start_poker(config, verbose=2, cashgame: bool = False, log_file_location: str = ''):
     config.validation()
-    dealer = Dealer(config.sb_amount, config.initial_stack, config.ante)
+    dealer = Dealer(config.sb_amount, config.initial_stack, config.ante, log_file_location)
     dealer.set_verbose(verbose)
     dealer.set_blind_structure(config.blind_structure)
     for info in config.players_info:

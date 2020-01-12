@@ -20,6 +20,7 @@ class Player:
         self.action_histories = []
         self.pay_info = PayInfo()
         self.cashgame_stack = 0
+        self.last_hole_card = []
 
     def add_holecard(self, cards):
         if len(self.hole_card) != 0:
@@ -31,6 +32,7 @@ class Player:
         self.hole_card = cards
 
     def clear_holecard(self):
+        self.last_hole_card = self.hole_card
         self.hole_card = []
 
     def append_chip(self, amount):

@@ -1,5 +1,7 @@
 import random
 from collections import OrderedDict
+import json
+from json import JSONDecodeError
 
 from pypokerengine.engine.poker_constants import PokerConstants as Const
 from pypokerengine.engine.table import Table
@@ -10,7 +12,7 @@ from pypokerengine.engine.message_builder import MessageBuilder
 
 class Dealer:
 
-    def __init__(self, small_blind_amount=None, initial_stack=None, ante=None):
+    def __init__(self, small_blind_amount=None, initial_stack=None, ante=None, log_file_location: str = ''):
         self.small_blind_amount = small_blind_amount
         self.ante = ante if ante else 0
         self.initial_stack = initial_stack
@@ -19,6 +21,7 @@ class Dealer:
         self.message_summarizer = MessageSummarizer(verbose=0)
         self.table = Table()
         self.blind_structure = {}
+        self.log_file_location = log_file_location
 
     def register_player(self, player_name, algorithm):
         self.__config_check()
@@ -53,6 +56,8 @@ class Dealer:
                 state, msgs = RoundManager.apply_action(state, action, bet_amount)
             else:  # finish the round after publish round result
                 self.__publish_messages(msgs)
+                if self.log_file_location is not '':
+                    self.__write_round_log(round_count, state['table'], msgs)
                 break
         return state["table"]
 
@@ -181,6 +186,24 @@ class Dealer:
         uuid_size = 22
         chars = [chr(code) for code in range(97, 123)]
         return "".join([random.choice(chars) for _ in range(uuid_size)])
+
+    def __write_round_log(self, round_count, table, msgs):
+        round_msg = msgs[-1][-1]['message']
+        player_hand_info = {}
+        for player in table.seats.players:
+            player_hand_info[player.uuid] = [str(card) for card in player.last_hole_card]
+        new_hand_info = []
+        for player in round_msg['hand_info']:
+            player['hand']['hole'] = player_hand_info[player['uuid']]
+            new_hand_info.append(player)
+        round_msg['hand_info'] = new_hand_info
+        with open(self.log_file_location, 'a+') as logfile:
+            try:
+                current_msg = json.load(logfile)
+            except JSONDecodeError:
+                current_msg = {}
+            current_msg[f'round_{round_count}'] = round_msg
+            logfile.write(json.dumps(current_msg))
 
 
 class MessageHandler:
