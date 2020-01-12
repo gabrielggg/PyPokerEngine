@@ -35,12 +35,12 @@ class Dealer:
         ante, sb_amount = self.ante, self.small_blind_amount
         for round_count in range(1, max_round + 1):
             ante, sb_amount = self.__update_forced_bet_amount(ante, sb_amount, round_count, self.blind_structure)
-            if cashgame: self.__reset_stack_for_cashgame()
             table = self.__exclude_short_of_money_players(table, ante, sb_amount)
-            if self.__is_game_finished(table):
+            if self.__is_game_finished(table) and not cashgame:
                 break
             table = self.play_round(round_count, sb_amount, ante, table)
             table.shift_dealer_btn()
+            if cashgame: self.__reset_stack_for_cashgame(table)
 
         return self.__generate_game_result(max_round, table.seats)
 
@@ -143,9 +143,9 @@ class Dealer:
         for player in no_money_players:
             player.pay_info.update_to_fold()
 
-    def __reset_stack_for_cashgame(self):
-        for player in self.table.seats.players:
-            player.cashgame_stack += player.stack
+    def __reset_stack_for_cashgame(self, table):
+        for player in table.seats.players:
+            player.cashgame_stack = player.cashgame_stack + player.stack - self.initial_stack
             player.stack = self.initial_stack
 
     def __generate_game_result(self, max_round, seats):
