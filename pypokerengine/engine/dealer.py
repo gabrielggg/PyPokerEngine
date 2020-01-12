@@ -143,7 +143,7 @@ class Dealer:
             player.pay_info.update_to_fold()
 
     def __reset_stack_for_cashgame(self):
-        for player in self.table.seats.players():
+        for player in self.table.seats.players:
             player.cashgame_stack += player.stack
             player.stack = self.initial_stack
 
