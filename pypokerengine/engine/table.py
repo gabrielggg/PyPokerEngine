@@ -1,4 +1,3 @@
-# from pypokerengine.engine.card import Card
 from pypokerengine.engine.seats import Seats
 from pypokerengine.engine.deck import Deck
 

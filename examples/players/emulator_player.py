@@ -5,8 +5,11 @@ from pypokerengine.utils.game_state_utils import restore_game_state, attach_hole
 
 NB_SIMULATION = 1000
 DEBUG_MODE = True
+
+
 def log(msg):
     if DEBUG_MODE: print("[debug_info] --> %s" % msg)
+
 
 class EmulatorPlayer(BasePokerPlayer):
 
@@ -39,11 +42,12 @@ class EmulatorPlayer(BasePokerPlayer):
             for i in range(NB_SIMULATION):
                 game_state = self._setup_game_state(round_state, hole_card)
                 round_finished_state, _events = self.emulator.run_until_round_finish(game_state)
-                my_stack = [player for player in round_finished_state['table'].seats.players if player.uuid == self.uuid][0].stack
+                my_stack = \
+                [player for player in round_finished_state['table'].seats.players if player.uuid == self.uuid][0].stack
                 simulation_results.append(my_stack)
             action_results[action] = 1.0 * sum(simulation_results) / NB_SIMULATION
             log("average stack after simulation when declares %s : %s" % (
-                {0:'FOLD', 1:'CALL', 2:'MIN_RAISE', 3:'MAX_RAISE'}[action], action_results[action])
+                {0: 'FOLD', 1: 'CALL', 2: 'MIN_RAISE', 3: 'MAX_RAISE'}[action], action_results[action])
                 )
 
         best_action = max(zip(action_results, try_actions))[1]
@@ -73,8 +77,8 @@ class EmulatorPlayer(BasePokerPlayer):
     def receive_round_result_message(self, winners, hand_info, round_state):
         pass
 
-class MyModel(BasePokerPlayer):
 
+class MyModel(BasePokerPlayer):
     FOLD = 0
     CALL = 1
     MIN_RAISE = 2
@@ -94,4 +98,3 @@ class MyModel(BasePokerPlayer):
             return valid_actions[2]['action'], valid_actions[2]['amount']['max']
         else:
             raise Exception("Invalid action [ %s ] is set" % self.action)
-

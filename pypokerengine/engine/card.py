@@ -42,10 +42,10 @@ class Card:
 
     # for pretty printing
     PRETTY_SUITS = {
-        1: chr(9824),   # spades
-        2: chr(9829),   # hearts
-        4: chr(9830),   # diamonds
-        8: chr(9827)    # clubs
+        1: chr(9824),  # spades
+        2: chr(9829),  # hearts
+        4: chr(9830),  # diamonds
+        8: chr(9827)  # clubs
     }
 
     # hearts and diamonds
@@ -157,7 +157,7 @@ class Card:
         output = list("".join(["0000" + "\t"] * 7) + "0000")
 
         for i in range(len(bstr)):
-            output[i + int(i/4)] = bstr[i]
+            output[i + int(i / 4)] = bstr[i]
 
         # output the string to console
         output.reverse()

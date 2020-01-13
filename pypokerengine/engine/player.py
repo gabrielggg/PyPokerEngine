@@ -1,7 +1,5 @@
 from pypokerengine.engine.card import Card
-
 from pypokerengine.engine.pay_info import PayInfo
-# from pypokerengine.engine.card import Card
 from pypokerengine.engine.poker_constants import PokerConstants as Const
 
 

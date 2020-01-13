@@ -1,7 +1,7 @@
 import itertools
 from .card import Card
-from .deck import Deck
 from .lookup import LookupTable
+
 
 class Evaluator(object):
     """
@@ -17,7 +17,7 @@ class Evaluator(object):
     def __init__(self):
 
         self.table = LookupTable()
-        
+
         self.hand_size_map = {
             5: self._five,
             6: self._six,
@@ -80,7 +80,7 @@ class Evaluator(object):
 
         all5cardcombobs = itertools.combinations(cards, 5)
         for combo in all5cardcombobs:
-            
+
             score = self._five(combo)
             if score < minimum:
                 minimum = score
@@ -143,7 +143,7 @@ class Evaluator(object):
         for i in range(len(stages)):
             line = "=" * line_length
             print(f"{line} {stages[i]} {line}")
-            
+
             best_rank = 7463  # rank one worse than worst hand
             winners = []
             for player, hand in enumerate(hands):
