@@ -1,3 +1,5 @@
+from pypokerengine.engine.card import Card
+
 from pypokerengine.engine.pay_info import PayInfo
 # from pypokerengine.engine.card import Card
 from pypokerengine.engine.poker_constants import PokerConstants as Const
@@ -32,7 +34,7 @@ class Player:
         self.hole_card = cards
 
     def clear_holecard(self):
-        self.last_hole_card = self.hole_card
+        self.last_hole_card = [Card.int_to_str(c) for c in self.hole_card]
         self.hole_card = []
 
     def append_chip(self, amount):
