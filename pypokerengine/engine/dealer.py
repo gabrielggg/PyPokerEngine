@@ -22,6 +22,7 @@ class Dealer:
         self.table = Table()
         self.blind_structure = {}
         self.log_file_location = log_file_location
+        self.game_history = {}
 
     def register_player(self, player_name, algorithm):
         self.__config_check()
@@ -44,7 +45,7 @@ class Dealer:
             table = self.play_round(round_count, sb_amount, ante, table)
             table.shift_dealer_btn()
             if cashgame: self.__reset_stack_for_cashgame(table)
-
+        self.__write_game_history_to_file()
         return self.__generate_game_result(max_round, table.seats)
 
     def play_round(self, round_count, blind_amount, ante, table):
@@ -197,14 +198,11 @@ class Dealer:
             player['hand']['hole'] = player_hand_info[player['uuid']]
             new_hand_info.append(player)
         round_msg['hand_info'] = new_hand_info
-        try:
-            with open(self.log_file_location) as logfile:
-                current_msg = json.load(logfile)
-        except FileNotFoundError:
-            current_msg = {}
-        with open(self.log_file_location, 'w') as logfile:
-            current_msg[f'round_{round_count}'] = round_msg
-            logfile.write(json.dumps(current_msg))
+        self.game_history[f'round_{round_count}'] = round_msg
+
+    def __write_game_history_to_file(self):
+        with open(self.log_file_location, 'w+') as logfile:
+            logfile.write(json.dumps(self.game_history))
 
 
 class MessageHandler:
