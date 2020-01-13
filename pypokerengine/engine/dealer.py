@@ -197,11 +197,12 @@ class Dealer:
             player['hand']['hole'] = player_hand_info[player['uuid']]
             new_hand_info.append(player)
         round_msg['hand_info'] = new_hand_info
-        with open(self.log_file_location, 'a+') as logfile:
-            try:
+        try:
+            with open(self.log_file_location) as logfile:
                 current_msg = json.load(logfile)
-            except JSONDecodeError:
-                current_msg = {}
+        except FileNotFoundError:
+            current_msg = {}
+        with open(self.log_file_location, 'w') as logfile:
             current_msg[f'round_{round_count}'] = round_msg
             logfile.write(json.dumps(current_msg))
 
