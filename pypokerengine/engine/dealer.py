@@ -1,7 +1,6 @@
 import random
 from collections import OrderedDict
 import json
-from json import JSONDecodeError
 
 from pypokerengine.engine.poker_constants import PokerConstants as Const
 from pypokerengine.engine.table import Table
@@ -44,7 +43,8 @@ class Dealer:
                 break
             table = self.play_round(round_count, sb_amount, ante, table)
             table.shift_dealer_btn()
-            if cashgame: self.__reset_stack_for_cashgame(table)
+            if cashgame:
+                table = self.__reset_stack_for_cashgame(table)
         self.__write_game_history_to_file()
         return self.__generate_game_result(max_round, table.seats)
 
@@ -58,7 +58,7 @@ class Dealer:
             else:  # finish the round after publish round result
                 self.__publish_messages(msgs)
                 if self.log_file_location is not '':
-                    self.__write_round_log(round_count, state['table'], msgs)
+                    self.__write_round_log(round_count, msgs)
                 break
         return state["table"]
 
@@ -151,8 +151,9 @@ class Dealer:
 
     def __reset_stack_for_cashgame(self, table):
         for player in table.seats.players:
-            player.cashgame_stack = player.cashgame_stack + player.stack - self.initial_stack
+            player.cashgame_stack += player.stack - self.initial_stack
             player.stack = self.initial_stack
+        return table
 
     def __generate_game_result(self, max_round, seats):
         config = self.__gen_config(max_round)
@@ -188,16 +189,8 @@ class Dealer:
         chars = [chr(code) for code in range(97, 123)]
         return "".join([random.choice(chars) for _ in range(uuid_size)])
 
-    def __write_round_log(self, round_count, table, msgs):
+    def __write_round_log(self, round_count, msgs):
         round_msg = msgs[-1][-1]['message']
-        player_hand_info = {}
-        for player in table.seats.players:
-            player_hand_info[player.uuid] = [str(card) for card in player.last_hole_card]
-        new_hand_info = []
-        for player in round_msg['hand_info']:
-            player['hand']['hole'] = player_hand_info[player['uuid']]
-            new_hand_info.append(player)
-        round_msg['hand_info'] = new_hand_info
         self.game_history[f'round_{round_count}'] = round_msg
 
     def __write_game_history_to_file(self):

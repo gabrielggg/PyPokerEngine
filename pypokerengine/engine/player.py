@@ -88,7 +88,7 @@ class Player:
         hole = [card for card in self.hole_card]
         return [
             self.name, self.uuid, self.stack, hole, \
-            self.action_histories[::], self.pay_info.serialize(), self.round_action_histories[::]
+            self.action_histories[::], self.pay_info.serialize(), self.round_action_histories[::], self.cashgame_stack
         ]
 
     @classmethod
@@ -99,6 +99,7 @@ class Player:
         player.action_histories = serial[4]
         player.pay_info = PayInfo.deserialize(serial[5])
         player.round_action_histories = serial[6]
+        player.cashgame_stack = serial[7]
         return player
 
     """ private """

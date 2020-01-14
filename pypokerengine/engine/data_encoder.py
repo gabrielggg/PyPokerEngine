@@ -26,9 +26,9 @@ class DataEncoder:
         return hash_
 
     @classmethod
-    def encode_seats(self, seats):
+    def encode_seats(self, seats, hole_cards = False):
         return {
-            "seats": [self.encode_player(player) for player in seats.players]
+            "seats": [self.encode_player(player, holecard=hole_cards) for player in seats.players]
         }
 
     @classmethod
@@ -97,7 +97,7 @@ class DataEncoder:
         return {"winners": self.__encode_players(winners)}
 
     @classmethod
-    def encode_round_state(self, state):
+    def encode_round_state(self, state, hole_cards = False):
         hsh = {
             "street": self.__street_to_str(state["street"]),
             "pot": self.encode_pot(state["table"].seats.players),
@@ -109,7 +109,7 @@ class DataEncoder:
             "round_count": state["round_count"],
             "small_blind_amount": state["small_blind_amount"]
         }
-        hsh.update(self.encode_seats(state["table"].seats))
+        hsh.update(self.encode_seats(state["table"].seats, hole_cards))
         hsh.update(self.encode_action_histories(state["table"]))
         return hsh
 

@@ -72,7 +72,7 @@ class MessageBuilder:
             "message_type": self.ROUND_RESULT_MESSAGE,
             "round_count": round_count,
             "hand_info": hand_info,
-            "round_state": DataEncoder.encode_round_state(state)
+            "round_state": DataEncoder.encode_round_state(state, True)
         }
         message.update(DataEncoder.encode_winners(winners))
         return self.__build_notification_message(message)
