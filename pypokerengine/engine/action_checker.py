@@ -65,7 +65,7 @@ class ActionChecker:
 
     @classmethod
     def __is_illegal_raise(self, players, amount, sb_amount):
-        return self.__min_raise_amount(players, sb_amount) > amount or amount / sb_amount != 0
+        return self.__min_raise_amount(players, sb_amount) > amount or not (isinstance(amount, int) or amount.is_integer())
 
     @classmethod
     def __min_raise_amount(self, players, sb_amount):
