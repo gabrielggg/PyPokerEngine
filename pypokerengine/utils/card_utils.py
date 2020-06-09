@@ -41,7 +41,12 @@ def _montecarlo_simulation(nb_player, hole_card, community_card):
     opponents_hole = [unused_cards[2 * i:2 * i + 2] for i in range(nb_player - 1)]
     opponents_score = [HandEvaluator.eval_hand(hole, community_card) for hole in opponents_hole]
     my_score = HandEvaluator.eval_hand(hole_card, community_card)
-    return 1 if my_score < max(opponents_score) else 0
+    if (my_score < max(opponents_score)):
+        return 1
+    elif (my_score == max(opponents_score)):
+        return 0.5
+    else: 
+        return 0
 
 
 def _fill_community_card(base_cards, used_card):
